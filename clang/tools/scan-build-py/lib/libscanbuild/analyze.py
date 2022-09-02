@@ -24,6 +24,7 @@ import datetime
 import shutil
 import glob
 from collections import defaultdict
+from pathlib import Path
 
 from libscanbuild import command_entry_point, compiler_wrapper, \
     wrapper_environment, run_build, run_command, CtuConfig
@@ -89,6 +90,74 @@ def analyze_build():
         number_of_bugs = document(args)
         # Set exit status as it was requested.
         return number_of_bugs if args.status_bugs else 0
+
+
+def _query_cpu():
+    """ Honor cpu.cfs_quota_us when running under cgroups limitations
+
+    cpu.cfs_quota_us and cpu.cfs_period_us limit CPU resources and used
+    by container management systems such as  Kubernetes to limit CPU
+    time consumed by containers.
+
+    In particular, for Docker one can set '--cpus' option to mimic limitation
+    of CPU cores. In practice, '--cpus' is the equivalent of setting corresponding
+    --cpu-period and --cpu-quota.
+
+    Python doesn't take such limitations into account when running inside
+    container. See https://bugs.python.org/issue36054 - os.cpu_count() still
+    returns number of host CPU cores. As a result, all routines that use this
+    function to get CPU count, ignore container limitations.
+
+    For us this means that number of processes created multiprocessing.Pool()
+    inside run_analyzer_parallel() is equal to the number of host CPU cores.
+    This can become a problem if we are running on a powerfull server with
+    many containers.
+
+    Since the fix for Python doesn' seem to come in the near future, we
+    calculate limitations by ourselves in this function and provide
+    necessary argument to the multiprocessing.Pool()
+    """
+    cpu_quota, avail_cpu = None, None
+
+    if Path("/sys/fs/cgroup/cpu/cpu.cfs_quota_us").is_file():
+        with open("/sys/fs/cgroup/cpu/cpu.cfs_quota_us", encoding="utf-8") as file:
+            cpu_quota = int(file.read().rstrip())
+
+    if (
+        cpu_quota
+        and cpu_quota != -1
+        and Path("/sys/fs/cgroup/cpu/cpu.cfs_period_us").is_file()
+    ):
+        with open("/sys/fs/cgroup/cpu/cpu.cfs_period_us", encoding="utf-8") as file:
+            cpu_period = int(file.read().rstrip())
+        # Divide quota by period and you should get num of allotted CPU to the container, rounded down if fractional.
+        avail_cpu = int(cpu_quota / cpu_period)
+        # Calculated limit can become zero after rounding
+        if avail_cpu == 0:
+            avail_cpu = 1
+
+    return avail_cpu
+
+
+def _cpu_count() -> int:
+    """Use sched_affinity if available for virtualized or containerized
+    environments.
+    """
+    cpu_share = _query_cpu()
+    cpu_count = None
+    sched_getaffinity = getattr(os, "sched_getaffinity", None)
+
+    # pylint: disable=not-callable,using-constant-test,useless-suppression
+    if sched_getaffinity:
+        cpu_count = len(sched_getaffinity(0))
+    elif multiprocessing:
+        cpu_count = multiprocessing.cpu_count()
+    else:
+        cpu_count = 1
+
+    if cpu_share is not None:
+        return min(cpu_share, cpu_count)
+    return cpu_count
 
 
 def need_analyzer(args):
@@ -235,7 +304,7 @@ def run_analyzer_parallel(args):
                      for cmd in json.load(handle) if not exclude(
                             cmd['file'], cmd['directory']))
         # when verbose output requested execute sequentially
-        pool = multiprocessing.Pool(1 if args.verbose > 2 else None)
+        pool = multiprocessing.Pool(1 if args.verbose > 2 else _cpu_count)
         for current in pool.imap_unordered(run, generator):
             if current is not None:
                 # display error message from the static analyzer
