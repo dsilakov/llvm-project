@@ -264,38 +264,38 @@ InstructionCost RISCVTTIImpl::getGatherScatterOpCost(
 // instruction counts with the following adjustments made:
 // * One vsetvli is considered free.
 static const CostTblEntry VectorIntrinsicCostTable[]{
-    {Intrinsic::floor, MVT::v2f32, 15},
-    {Intrinsic::floor, MVT::v4f32, 15},
-    {Intrinsic::floor, MVT::v8f32, 15},
-    {Intrinsic::floor, MVT::v16f32, 15},
-    {Intrinsic::floor, MVT::nxv2f32, 15},
-    {Intrinsic::floor, MVT::nxv4f32, 15},
-    {Intrinsic::floor, MVT::nxv8f32, 15},
-    {Intrinsic::floor, MVT::nxv16f32, 15},
-    {Intrinsic::floor, MVT::v2f64, 15},
-    {Intrinsic::floor, MVT::v4f64, 15},
-    {Intrinsic::floor, MVT::v8f64, 15},
-    {Intrinsic::floor, MVT::v16f64, 15},
-    {Intrinsic::floor, MVT::nxv1f64, 15},
-    {Intrinsic::floor, MVT::nxv2f64, 15},
-    {Intrinsic::floor, MVT::nxv4f64, 15},
-    {Intrinsic::floor, MVT::nxv8f64, 15},
-    {Intrinsic::ceil, MVT::v2f32, 15},
-    {Intrinsic::ceil, MVT::v4f32, 15},
-    {Intrinsic::ceil, MVT::v8f32, 15},
-    {Intrinsic::ceil, MVT::v16f32, 15},
-    {Intrinsic::ceil, MVT::nxv2f32, 15},
-    {Intrinsic::ceil, MVT::nxv4f32, 15},
-    {Intrinsic::ceil, MVT::nxv8f32, 15},
-    {Intrinsic::ceil, MVT::nxv16f32, 15},
-    {Intrinsic::ceil, MVT::v2f64, 15},
-    {Intrinsic::ceil, MVT::v4f64, 15},
-    {Intrinsic::ceil, MVT::v8f64, 15},
-    {Intrinsic::ceil, MVT::v16f64, 15},
-    {Intrinsic::ceil, MVT::nxv1f64, 15},
-    {Intrinsic::ceil, MVT::nxv2f64, 15},
-    {Intrinsic::ceil, MVT::nxv4f64, 15},
-    {Intrinsic::ceil, MVT::nxv8f64, 15},
+    {Intrinsic::floor, MVT::v2f32, 9},
+    {Intrinsic::floor, MVT::v4f32, 9},
+    {Intrinsic::floor, MVT::v8f32, 9},
+    {Intrinsic::floor, MVT::v16f32, 9},
+    {Intrinsic::floor, MVT::nxv2f32, 9},
+    {Intrinsic::floor, MVT::nxv4f32, 9},
+    {Intrinsic::floor, MVT::nxv8f32, 9},
+    {Intrinsic::floor, MVT::nxv16f32, 9},
+    {Intrinsic::floor, MVT::v2f64, 9},
+    {Intrinsic::floor, MVT::v4f64, 9},
+    {Intrinsic::floor, MVT::v8f64, 9},
+    {Intrinsic::floor, MVT::v16f64, 9},
+    {Intrinsic::floor, MVT::nxv1f64, 9},
+    {Intrinsic::floor, MVT::nxv2f64, 9},
+    {Intrinsic::floor, MVT::nxv4f64, 9},
+    {Intrinsic::floor, MVT::nxv8f64, 9},
+    {Intrinsic::ceil, MVT::v2f32, 9},
+    {Intrinsic::ceil, MVT::v4f32, 9},
+    {Intrinsic::ceil, MVT::v8f32, 9},
+    {Intrinsic::ceil, MVT::v16f32, 9},
+    {Intrinsic::ceil, MVT::nxv2f32, 9},
+    {Intrinsic::ceil, MVT::nxv4f32, 9},
+    {Intrinsic::ceil, MVT::nxv8f32, 9},
+    {Intrinsic::ceil, MVT::nxv16f32, 9},
+    {Intrinsic::ceil, MVT::v2f64, 9},
+    {Intrinsic::ceil, MVT::v4f64, 9},
+    {Intrinsic::ceil, MVT::v8f64, 9},
+    {Intrinsic::ceil, MVT::v16f64, 9},
+    {Intrinsic::ceil, MVT::nxv1f64, 9},
+    {Intrinsic::ceil, MVT::nxv2f64, 9},
+    {Intrinsic::ceil, MVT::nxv4f64, 9},
+    {Intrinsic::ceil, MVT::nxv8f64, 9},
     {Intrinsic::trunc, MVT::v2f32, 7},
     {Intrinsic::trunc, MVT::v4f32, 7},
     {Intrinsic::trunc, MVT::v8f32, 7},
@@ -312,22 +312,22 @@ static const CostTblEntry VectorIntrinsicCostTable[]{
     {Intrinsic::trunc, MVT::nxv2f64, 7},
     {Intrinsic::trunc, MVT::nxv4f64, 7},
     {Intrinsic::trunc, MVT::nxv8f64, 7},
-    {Intrinsic::round, MVT::v2f32, 10},
-    {Intrinsic::round, MVT::v4f32, 10},
-    {Intrinsic::round, MVT::v8f32, 10},
-    {Intrinsic::round, MVT::v16f32, 10},
-    {Intrinsic::round, MVT::nxv2f32, 10},
-    {Intrinsic::round, MVT::nxv4f32, 10},
-    {Intrinsic::round, MVT::nxv8f32, 10},
-    {Intrinsic::round, MVT::nxv16f32, 10},
-    {Intrinsic::round, MVT::v2f64, 10},
-    {Intrinsic::round, MVT::v4f64, 10},
-    {Intrinsic::round, MVT::v8f64, 10},
-    {Intrinsic::round, MVT::v16f64, 10},
-    {Intrinsic::round, MVT::nxv1f64, 10},
-    {Intrinsic::round, MVT::nxv2f64, 10},
-    {Intrinsic::round, MVT::nxv4f64, 10},
-    {Intrinsic::round, MVT::nxv8f64, 10},
+    {Intrinsic::round, MVT::v2f32, 9},
+    {Intrinsic::round, MVT::v4f32, 9},
+    {Intrinsic::round, MVT::v8f32, 9},
+    {Intrinsic::round, MVT::v16f32, 9},
+    {Intrinsic::round, MVT::nxv2f32, 9},
+    {Intrinsic::round, MVT::nxv4f32, 9},
+    {Intrinsic::round, MVT::nxv8f32, 9},
+    {Intrinsic::round, MVT::nxv16f32, 9},
+    {Intrinsic::round, MVT::v2f64, 9},
+    {Intrinsic::round, MVT::v4f64, 9},
+    {Intrinsic::round, MVT::v8f64, 9},
+    {Intrinsic::round, MVT::v16f64, 9},
+    {Intrinsic::round, MVT::nxv1f64, 9},
+    {Intrinsic::round, MVT::nxv2f64, 9},
+    {Intrinsic::round, MVT::nxv4f64, 9},
+    {Intrinsic::round, MVT::nxv8f64, 9},
     {Intrinsic::fabs, MVT::v2f32, 1},
     {Intrinsic::fabs, MVT::v4f32, 1},
     {Intrinsic::fabs, MVT::v8f32, 1},
@@ -713,6 +713,15 @@ InstructionCost RISCVTTIImpl::getCmpSelInstrCost(unsigned Opcode, Type *ValTy,
       return LT.first * 1;
     }
 
+    if (ValTy->getScalarSizeInBits() == 1) {
+      //  vmv.v.x v9, a0
+      //  vmsne.vi v9, v9, 0
+      //  vmandn.mm v8, v8, v9
+      //  vmand.mm v9, v0, v9
+      //  vmor.mm v0, v9, v8
+      return LT.first * 5;
+    }
+
     // vmv.v.x v10, a0
     // vmsne.vi v0, v10, 0
     // vmerge.vvm v8, v9, v8, v0
@@ -727,7 +736,28 @@ InstructionCost RISCVTTIImpl::getCmpSelInstrCost(unsigned Opcode, Type *ValTy,
     if (CmpInst::isIntPredicate(VecPred))
       return LT.first * 1;
 
-    // TODO: Add cost for fp vector compare instruction.
+    // If we do not support the input floating point vector type, use the base
+    // one which will calculate as:
+    // ScalarizeCost + Num * Cost for fixed vector,
+    // InvalidCost for scalable vector.
+    if ((ValTy->getScalarSizeInBits() == 16 && !ST->hasVInstructionsF16()) ||
+        (ValTy->getScalarSizeInBits() == 32 && !ST->hasVInstructionsF32()) ||
+        (ValTy->getScalarSizeInBits() == 64 && !ST->hasVInstructionsF64()))
+      return BaseT::getCmpSelInstrCost(Opcode, ValTy, CondTy, VecPred, CostKind,
+                                       I);
+    switch (VecPred) {
+      // Support natively.
+    case CmpInst::FCMP_OEQ:
+    case CmpInst::FCMP_OGT:
+    case CmpInst::FCMP_OGE:
+    case CmpInst::FCMP_OLT:
+    case CmpInst::FCMP_OLE:
+    case CmpInst::FCMP_UNE:
+      return LT.first * 1;
+    // TODO: Other comparisons?
+    default:
+      break;
+    }
   }
 
   // TODO: Add cost for scalar type.

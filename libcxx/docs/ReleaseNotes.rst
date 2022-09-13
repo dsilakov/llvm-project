@@ -39,9 +39,14 @@ Implemented Papers
 ------------------
 - P2499R0 - ``string_view`` range constructor should be ``explicit``
 - P2417R2 - A more constexpr bitset
+- P2445R1 - ``std::forward_like``
+- P2273R3 - Making ``std::unique_ptr`` constexpr
 
 Improvements and New Features
 -----------------------------
+- Declarations of ``std::c8rtomb()`` and ``std::mbrtoc8()`` from P0482R6 are
+  now provided when implementations in the global namespace are provided by
+  the C library.
 
 Deprecations and Removals
 -------------------------
@@ -51,11 +56,12 @@ Deprecations and Removals
 
   - C++20: ``chrono``
   - C++2b: ``algorithm``, ``array``, ``atomic``, ``bit``, ``chrono``,
-    ``climits``, ``cmath``, ``compare``, ``concepts``, ``cstdlib``,
-    ``cstring``, ``ctime``, ``exception``, ``functional``,
-    ``initializer_list``, ``iosfwd``, ``iterator``, ``memory``, ``new``,
-    ``optional``, ``ratio``, ``stdexcept``, ``tuple``, ``typeinfo``,
-    ``unordered_map``, ``utility``, ``variant``, ``vector``.
+    ``climits``, ``cmath``, ``compare``, ``concepts``, ``cstdarg`, ``cstddef``,
+    ``cstdint``, ``cstdlib``, ``cstring``, ``ctime``, ``exception``,
+    ``functional``, ``initializer_list``, ``iosfwd``, ``iterator``, ``limits``,
+    ``memory``, ``new``, ``numeric``, ``optional``, ``ratio``, ``stdexcept``,
+    ``string``, ``tuple``, ``type_traits``, ``typeinfo``, ``unordered_map``,
+    ``utility``, ``variant``, ``vector``.
 
   Users can also remove all incidental transitive includes by defining
   ``_LIBCPP_REMOVE_TRANSITIVE_INCLUDES`` regardless of the language version
@@ -75,7 +81,7 @@ API Changes
 
 - ``_LIBCPP_ENABLE_NODISCARD`` and ``_LIBCPP_DISABLE_NODISCARD_AFTER_CXX17`` are no longer respected.
   Any standards-required ``[[nodiscard]]`` applications in C++20 are now always enabled. Any extended applications
-  can now be enabled by defining ``_LIBCPP_ENABLE_NODISCARD_EXT``.
+  are now enabled by default and can be disabled by defining ``_LIBCPP_DISABLE_NODISCARD_EXT``.
 
 ABI Affecting Changes
 ---------------------

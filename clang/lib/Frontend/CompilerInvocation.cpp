@@ -1492,13 +1492,8 @@ void CompilerInvocation::GenerateCodeGenArgs(
                 F.Filename, SA);
   }
 
-  // TODO: Consider removing marshalling annotations from f[no_]emulated_tls.
-  //  That would make it easy to generate the option only **once** if it was
-  //  explicitly set to non-default value.
-  if (Opts.ExplicitEmulatedTLS) {
-    GenerateArg(
-        Args, Opts.EmulatedTLS ? OPT_femulated_tls : OPT_fno_emulated_tls, SA);
-  }
+  GenerateArg(
+      Args, Opts.EmulatedTLS ? OPT_femulated_tls : OPT_fno_emulated_tls, SA);
 
   if (Opts.FPDenormalMode != llvm::DenormalMode::getIEEE())
     GenerateArg(Args, OPT_fdenormal_fp_math_EQ, Opts.FPDenormalMode.str(), SA);
@@ -1862,9 +1857,9 @@ bool CompilerInvocation::ParseCodeGenArgs(CodeGenOptions &Opts, ArgList &Args,
     Opts.LinkBitcodeFiles.push_back(F);
   }
 
-  if (Args.getLastArg(OPT_femulated_tls) ||
-      Args.getLastArg(OPT_fno_emulated_tls)) {
-    Opts.ExplicitEmulatedTLS = true;
+  if (!Args.getLastArg(OPT_femulated_tls) &&
+      !Args.getLastArg(OPT_fno_emulated_tls)) {
+    Opts.EmulatedTLS = T.hasDefaultEmulatedTLS();
   }
 
   if (Arg *A = Args.getLastArg(OPT_ftlsmodel_EQ)) {
@@ -4106,6 +4101,14 @@ bool CompilerInvocation::ParseLangArgs(LangOptions &Opts, ArgList &Args,
 
   if (const Arg *A = Args.getLastArg(OPT_frandomize_layout_seed_EQ))
     Opts.RandstructSeed = A->getValue(0);
+
+  // Validate options for HLSL
+  if (Opts.HLSL) {
+    bool SupportedTarget = T.getArch() == llvm::Triple::dxil &&
+                           T.getOS() == llvm::Triple::ShaderModel;
+    if (!SupportedTarget)
+      Diags.Report(diag::err_drv_hlsl_unsupported_target) << T.str();
+  }
 
   return Diags.getNumErrors() == NumErrorsBefore;
 }
